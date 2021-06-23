@@ -1,0 +1,65 @@
+package AplicarPatron;
+
+import java.io.IOException;
+
+import com.google.gson.stream.JsonReader;
+
+public abstract class CadenaMando {
+	protected CadenaMando sig;
+	protected String nombreCategoria;
+	
+	
+	public CadenaMando(CadenaMando s) {
+		this.sig=s;
+		
+	}
+	
+	public String parse(String jsonFileName) throws IOException {
+		return sig.parse(jsonFileName);
+	}
+	
+	public void setCadenaMando(CadenaMando cm) {
+	sig=cm;
+	}
+	 // else name.equals = null devuelvo error, o para else siguiente aplico de manera recursiva leerCategoria
+
+		public  StringBuffer leerCategoria(JsonReader reader, String name) throws IOException{
+		StringBuffer obj = new StringBuffer();
+		reader.beginArray();
+	
+	if(name.equals(nombreCategoria)) {
+
+		while(reader.hasNext()) {
+			reader.beginObject();
+			obj.append(leerDentro(reader)).append("\n");
+			reader.endObject();
+		}
+
+		obj.append("\n");
+		reader.endArray();
+		
+		
+	}else 
+		{ 
+		if(sig!=null){
+		obj= sig.leerCategoria(reader,name);
+		
+	}else {
+		reader.skipValue();
+		System.err.println(" Error Categoria" + name );
+		}
+	}
+
+	return obj;
+	}
+	//copiar los tres tipos que tengo porque este no se puede poner generico
+//	public String  leerDentro(JsonReader reader) throws IOException{
+//		String obj= null;
+//		while(reader.hasNext()) {
+//			String name= reader.nextName();	
+//		}
+//		return obj;
+//	}
+
+	
+}

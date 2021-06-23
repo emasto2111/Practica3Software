@@ -1,0 +1,71 @@
+package AplicarPatron;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.jar.Attributes.Name;
+
+import com.google.gson.stream.JsonReader;
+
+/**
+ * Created by jmalvarez on 11/5/16.
+ * http://developer.android.com/intl/es/training/basics/network-ops/xml.html
+ */
+public class DatabaseJSonReader {
+
+	private static final String MEDICINES_TAGNAME = "medicines";
+	private static final String RESCUEMEDPRES_TAGNAME = "rescueMedicinePresentations";
+	private static final String PHYSIOTHERAPY= "physiotherapies";
+	CadenaMando cad;
+	Medicines med;
+	Physiotherapy py;
+	Rescuemedpres rmp;
+
+	
+	
+	
+	
+	
+	public String parse(String jsonFileName) throws IOException {
+
+		med= new Medicines(null);
+		py= new Physiotherapy (med);
+		rmp= new Rescuemedpres (py);
+		InputStream usersIS = new FileInputStream(new File(jsonFileName));
+		JsonReader reader = new JsonReader(new InputStreamReader(usersIS, "UTF-8"));
+		
+		reader.beginObject();
+		
+		StringBuffer readData = new StringBuffer();
+		
+		while (reader.hasNext()) {
+			String name = reader.nextName();
+			//ver si es para mi, si es buscar categoria, si mi objeto apunta a null no hago nada.
+			 if(cad.leerCategoria(reader, readData)) {
+				 
+			 }
+			//readData.append(cad.parse(reader)).append("\n");
+		
+			/*
+			if (name.equals(MEDICINES_TAGNAME)) {
+				readData.append(readMedicines(reader)).append("\n");
+			} else if (name.equals(RESCUEMEDPRES_TAGNAME)) {
+				readData.append(readRescueMedicinePresentations(reader)).append("\n");
+			}else if(name.equals(PHYSIOTHERAPY)) {
+				readData.append(readPhysioterapies(reader)).append("\n");
+			}else {
+				reader.skipValue();
+				System.err.println("Category " + name + " not processed.");
+			}*/
+		}
+
+		reader.endObject();
+		reader.close();
+		usersIS.close();
+
+		return new String(readData);
+	}
+
+}
